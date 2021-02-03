@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <h3><a href="#" @click.preevnt="$router.push('/')">Shop</a></h3>
+    <h3><a href="#" @click.prevent="$router.push('/')">Shop</a></h3>
 
     <ul class="navbar-menu">
       <li>
@@ -24,7 +24,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default {
-  setup() {
+  setup () {
     const router = useRouter()
     const store = useStore()
 

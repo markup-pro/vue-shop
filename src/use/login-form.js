@@ -1,10 +1,10 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
-import {computed, watch} from 'vue'
-import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
+import { computed, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-export function useLoginForm() {
+export function useLoginForm () {
   const store = useStore()
   const router = useRouter()
   const { handleSubmit, isSubmitting, submitCount } = useForm()
@@ -33,7 +33,9 @@ export function useLoginForm() {
 
   watch(isTooManyAttempts, val => {
     if (val) {
-      setTimeout(() => submitCount.value = 0, 1500)
+      setTimeout(() => {
+        submitCount.value = 0
+      }, 1500)
     }
   })
 

@@ -9,7 +9,7 @@ import MainLayout from './layout/MainLayout'
 import AuthLayout from './layout/AuthLayout'
 
 export default {
-  setup() {
+  setup () {
     const route = useRoute()
 
     return {

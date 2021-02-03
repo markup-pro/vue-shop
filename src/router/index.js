@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store'
+// import store from '../store'
 import Shop from '../views/Shop.vue'
 
 const routes = [

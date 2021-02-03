@@ -1,4 +1,4 @@
-import {createStore, createLogger} from 'vuex'
+import { createStore, createLogger } from 'vuex'
 import auth from './modules/auth.module'
 import cart from './modules/cart.module'
 
@@ -10,22 +10,22 @@ if (process.env.NODE_ENV === 'development') {
 
 export default createStore({
   plugins,
-  state() {
+  state () {
     return {
       message: null,
       sidebar: false
     }
   },
   mutations: {
-    setMessage(state, message) {
+    setMessage (state, message) {
       state.message = message
     },
-    clearMessage(state) {
+    clearMessage (state) {
       state.message = null
-    },
+    }
   },
   actions: {
-    setMessage({commit}, message) {
+    setMessage ({ commit }, message) {
       commit('setMessage', message)
       setTimeout(() => {
         commit('clearMessage')

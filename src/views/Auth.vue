@@ -28,7 +28,7 @@ import { error } from '@/utils/error'
 import { useLoginForm } from '@/use/login-form'
 
 export default {
-  setup() {
+  setup () {
     const route = useRoute()
     const store = useStore()
 

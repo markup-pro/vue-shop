@@ -24,8 +24,8 @@ export default {
       default: false
     }
   },
-  setup(props) {
-    document.title = `${ props.title } | Клон Банка`
+  setup (props) {
+    document.title = `${props.title} | Клон Банка`
   }
 }
 </script>
