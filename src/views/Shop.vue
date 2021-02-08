@@ -10,7 +10,7 @@
         :product="product"
         :key="product.id"></catalog-product>
     </div>
-    <div class="text-center" v-else>Товарой не найдено</div>
+    <div class="products-table" v-else>Товарой не найдено</div>
   </div>
 </template>
 
@@ -33,16 +33,13 @@ export default {
 
     onMounted(async () => {
       filter.value = { ...filter.value, ...route.query }
-      // loading.value = true
       await store.dispatch('catalog/products')
       await store.dispatch('catalog/categories')
-      // loading.value = false
     })
 
     watch(
       () => filter.value,
       (value) => {
-        console.log(value)
         const query = {}
         Object.keys(value).forEach((k) => {
           if (value[k]) {

@@ -60,14 +60,19 @@ export default {
   },
   getters: {
     products: (state) => (filter) => {
-      let products = state.products
+      let { products } = state
+
       if (filter.category) {
         products = state.products.filter((el) => {
-          return el.category === filter.category
+          if (filter.category && el.category === filter.category) {
+            return true
+          }
         })
       }
       if (filter.search) {
-
+        products = products.filter((el) => {
+          return ~el.title.toLowerCase().indexOf(filter.search.toLowerCase())
+        })
       }
       return products.sort((a, b) => (a.count === 0) - (b.count === 0))
     },

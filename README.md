@@ -1,4 +1,12 @@
-# vue-tasks
+# vue-shop
+
+## Auth
+```
+login: test@test.com
+password: 123456
+```
+
+## Hosting
 
 ## Project setup
 ```

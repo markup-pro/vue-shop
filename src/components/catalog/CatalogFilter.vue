@@ -1,6 +1,5 @@
 <template>
   <div class="products-filter">
-    {{modelValue}}
     <div class="form-control">
       <input
         type="text"
@@ -29,7 +28,7 @@
 </template>
 
 <script>
-import { ref, reactive, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 export default {
   emits: ['update:modelValue'],
@@ -43,23 +42,20 @@ export default {
       required: true
     }
   },
-  setup (_, context) {
+  setup (props, context) {
     const typeCategory = ref('')
-    const filter = reactive({
-      search: '',
-      category: ''
-    })
+    const filter = computed(() => props.modelValue)
 
     function changeSearch (event) {
-      filter.search = event.target.value
+      filter.value.search = event.target.value
     }
 
     function clearSearch () {
-      filter.search = ''
+      filter.value.search = ''
     }
 
     function choiceCategory (type) {
-      filter.category = type || ''
+      filter.value.category = type || ''
     }
 
     watch(filter, (value) => {
