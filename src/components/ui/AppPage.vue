@@ -1,14 +1,13 @@
 <template>
   <div class="breadcrumbs" v-if="back">
-    <router-link to="/" class="text-white">Вернуться к списку заявок</router-link>
+    <router-link :to="backLink" class="text-white">{{ backText }}</router-link>
   </div>
   <div class="card">
-    <h1 class="card-title">
-      {{title}}
-      <slot name="header" />
-    </h1>
-
-    <slot />
+    <div class="card-title" v-if="title">
+      <h1>{{ title }}</h1>
+      <slot name="header"></slot>
+    </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -16,16 +15,23 @@
 export default {
   props: {
     title: {
-      type: String,
-      required: true
+      type: String
     },
     back: {
       type: Boolean,
       default: false
+    },
+    backText: {
+      type: String,
+      default: ''
+    },
+    backLink: {
+      type: String,
+      default: ''
     }
   },
   setup (props) {
-    document.title = `${props.title} | Клон Банка`
+    document.title = `${props.title} | Shop Food`
   }
 }
 </script>

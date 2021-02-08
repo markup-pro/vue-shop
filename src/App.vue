@@ -1,12 +1,14 @@
 <template>
   <component :is="layout + '-layout'" v-if="layout" />
+  {{ layout }}
 </template>
 
 <script>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import MainLayout from './layout/MainLayout'
-import AuthLayout from './layout/AuthLayout'
+import AdminLayout from './layout/AdminLayout'
+import ErrorLayout from './layout/ErrorLayout'
 
 export default {
   setup () {
@@ -16,6 +18,6 @@ export default {
       layout: computed(() => route.meta.layout)
     }
   },
-  components: { MainLayout, AuthLayout }
+  components: { MainLayout, AdminLayout, ErrorLayout }
 }
 </script>

@@ -1,40 +1,60 @@
 <template>
   <nav class="navbar">
-    <h3><a href="#" @click.prevent="$router.push('/')">Shop</a></h3>
+    <h3><a href="#" @click.prevent="$router.push('/')">Shop Food</a></h3>
 
     <ul class="navbar-menu">
       <li>
         <router-link to="/">Магазин</router-link>
       </li>
       <li>
-        <router-link to="/cart">Корзина</router-link>
+        <router-link to="/cart">
+          Корзина <span v-if="cartCount" class="badge primary">{{ cartCount }}</span>
+        </router-link>
       </li>
-      <li>
-        <a href="#" @click.prevent="$router.push('/auth')">Вход</a>
+      <li v-if="!isAuthenticated">
+        <a href="#" @click.prevent="showAuth(true)">Вход</a>
       </li>
-      <li>
-        <a href="#" @click.prevent="logout">Выход</a>
+      <li v-else>
+        <router-link to="/admin">Админка</router-link>
       </li>
     </ul>
   </nav>
+
+  <teleport to="body">
+    <app-modal
+      :modal-open="isShowAuth"
+      @close="showAuth(false)"
+      title="Войти в систему">
+      <the-auth></the-auth>
+    </app-modal>
+  </teleport>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
+import AppModal from '@/components/ui/AppModal'
+import TheAuth from '@/components/TheAuth'
 
 export default {
   setup () {
-    const router = useRouter()
     const store = useStore()
 
-    return {
-      logout: () => {
-        store.commit('auth/logout')
-        router.push('/auth')
-      },
-      open: () => store.commit('openSidebar')
+    const isShowAuth = computed(() => store.getters['auth/isShowAuth'])
+    const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
+    const cartCount = computed(() => store.getters['cart/productCountAllInCart'])
+
+    const showAuth = (status) => {
+      store.commit('auth/showAuth', status)
     }
-  }
+
+    return {
+      isAuthenticated,
+      isShowAuth,
+      cartCount,
+      showAuth
+    }
+  },
+  components: { TheAuth, AppModal }
 }
 </script>

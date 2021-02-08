@@ -1,8 +1,14 @@
 <template>
   <div class="amount">
-    <button class="amount__btn btn danger" @click.prevent="decrement">-</button>
+    <button
+      class="amount__btn btn danger"
+      :disabled="value === 0"
+      @click.prevent="decrement">-</button>
     <div class="amount__count">{{ count }} шт.</div>
-    <button class="amount__btn btn primary" @click.prevent="increment">+</button>
+    <button
+      class="amount__btn btn primary"
+      :disabled="value === maxValue"
+      @click.prevent="increment">+</button>
   </div>
 </template>
 
@@ -55,10 +61,10 @@ export default {
   .amount {
     display: flex;
     align-items: center;
-    justify-content: center;
+    text-align: center;
 
     &__btn {
-      margin: 0;
+      margin: 0 !important;
     }
 
     &__count {

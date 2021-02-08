@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state () {
     return {
+      showAuth: false,
       token: localStorage.getItem(TOKEN_KEY)
     }
   },
@@ -17,6 +18,9 @@ export default {
     logout (state) {
       state.token = null
       localStorage.removeItem(TOKEN_KEY)
+    },
+    showAuth (state, payload) {
+      state.showAuth = payload
     }
   },
   actions: {
@@ -41,6 +45,9 @@ export default {
     },
     isAuthenticated (_, getters) {
       return !!getters.token
+    },
+    isShowAuth (state) {
+      return state.showAuth
     }
   }
 }

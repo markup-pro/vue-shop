@@ -1,6 +1,8 @@
 import { createStore, createLogger } from 'vuex'
 import auth from './modules/auth.module'
 import cart from './modules/cart.module'
+import catalog from './modules/catalog.module'
+import admin from './modules/admin.module'
 
 const plugins = []
 
@@ -34,6 +36,8 @@ export default createStore({
   },
   modules: {
     auth,
-    cart
+    cart,
+    catalog,
+    admin
   }
 })

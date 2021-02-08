@@ -1,14 +1,19 @@
 <template>
   <tr class="cart-product">
-    <img class="cart-product__img" :src="data.img" :alt="data.title">
-    <td>{{ data.title }}</td>
     <td>
-      <app-amount
-        @change="changeAmount"
-        :value="data.quantity"
-        :max-value="data.count"></app-amount>
+      <img class="cart-product__img" :src="product.img" :alt="product.title">
     </td>
-    <td>{{ currency(data.price * data.quantity) }}</td>
+    <td>{{ product.title }}</td>
+    <td>
+      <div class="cart-product__amount">
+        <app-amount
+          @change="changeAmount"
+          :value="productCountInCart"
+          :max-value="product.count"></app-amount>
+      </div>
+    </td>
+    <td>{{ currency(product.price) }}</td>
+    <td>{{ currency(product.price * productCountInCart) }}</td>
     <td>
       <div class="cart-product__remove" @click="remove">×</div>
     </td>
@@ -18,36 +23,39 @@
 <script>
 import { useStore } from 'vuex'
 import { currency } from '@/utils/currency'
+import { computed } from 'vue'
 import AppAmount from '@/components/ui/AppAmount'
 
 export default {
   props: {
-    data: {
+    product: {
       type: Object,
       required: true
     }
   },
   setup (props) {
     const store = useStore()
-    const remove = async (count) => {
-      store.dispatch('cart/removeProduct', {
-        id: props.data.id,
-        quantity: count
-      })
+    const productCountInCart = computed(() => store.getters['cart/productCountInCart'](props.product.id))
+
+    function updateCartModel (count) {
+      store.commit('cart/updateCartModel', { id: props.product.id, count })
+    }
+
+    const remove = async () => {
+      updateCartModel(0)
+      store.dispatch('cart/removeProduct', { id: props.product.id })
     }
 
     const changeAmount = (count) => {
-      if (count !== 0) {
-        store.dispatch('cart/updateProduct', {
-          id: props.data.id,
-          quantity: count
-        })
-      } else {
+      updateCartModel(count)
+
+      if (count === 0) {
         remove()
       }
     }
 
     return {
+      productCountInCart,
       currency,
       remove,
       changeAmount
@@ -65,6 +73,11 @@ export default {
 
     &__img {
       max-width: 100px;
+    }
+
+    &__amount {
+      display: flex;
+      justify-content: center;
     }
 
     &__remove {

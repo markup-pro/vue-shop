@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import store from '../store'
+import store from '../store'
 import Shop from '../views/Shop.vue'
 
 const routes = [
@@ -31,11 +31,33 @@ const routes = [
     }
   },
   {
-    path: '/auth',
-    name: 'Auth',
-    component: () => import('../views/Auth.vue'),
+    path: '/admin',
+    name: 'Admin',
+    redirect: '/admin/products',
+    component: () => import('../views/Admin.vue'),
+    children: [
+      {
+        path: 'products',
+        name: 'Products',
+        component: () => import('../views/AdminProducts.vue')
+      },
+      {
+        path: 'categories',
+        name: 'Categories',
+        component: () => import('../views/AdminCategories.vue')
+      }
+    ],
     meta: {
-      layout: 'auth',
+      layout: 'admin',
+      auth: true
+    }
+  },
+  {
+    path: '/:notFound(.*)',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue'),
+    meta: {
+      layout: 'error',
       auth: false
     }
   }
@@ -47,17 +69,18 @@ const router = createRouter({
   linkActiveClass: 'active',
   linkExactActiveClass: 'active'
 })
-//
-// router.beforeEach((to, from, next) => {
-//   const requireAuth = to.meta.auth
-//
-//   if (requireAuth && store.getters['auth/isAuthenticated']) {
-//     next()
-//   } else if (requireAuth && !store.getters['auth/isAuthenticated']) {
-//     next('/auth?message=auth')
-//   } else {
-//     next()
-//   }
-// })
+
+router.beforeEach((to, from, next) => {
+  const requireAuth = to.meta.auth
+
+  if (requireAuth && store.getters['auth/isAuthenticated']) {
+    next()
+  } else if (requireAuth && !store.getters['auth/isAuthenticated']) {
+    next('/')
+    store.commit('auth/showAuth', true)
+  } else {
+    next()
+  }
+})
 
 export default router

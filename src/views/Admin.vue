@@ -1,12 +1,3 @@
 <template>
-  <div class="card">
-    Админка
-  </div>
+  <router-view></router-view>
 </template>
-
-<script>
-export default {
-  setup () {
-  }
-}
-</script>

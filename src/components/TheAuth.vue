@@ -1,7 +1,5 @@
 <template>
-  <form class="card" @submit.prevent="onSubmit">
-    <h1>Войти в систему</h1>
-
+  <form @submit.prevent="onSubmit">
     <div :class="['form-control', { invalid: eError }]">
       <label for="email">Email</label>
       <input type="email" id="email" v-model="email" @blur="eBlur">
