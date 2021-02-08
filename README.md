@@ -7,6 +7,7 @@ password: 123456
 ```
 
 ## Hosting
+[site link](https://vue-shop-fdd11.web.app/)
 
 ## Project setup
 ```
