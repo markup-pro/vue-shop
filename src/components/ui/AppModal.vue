@@ -1,12 +1,12 @@
 <template>
   <transition name="modal">
-    <div class="modal" v-if="modalOpen">
+    <div class="modal" v-if="open" :style="{ zIndex }">
       <div class="modal__overlay" @click="$emit('close')"></div>
       <div class="modal__container">
         <div class="modal__dialog">
-          <div class="modal__dialog-close" @click="$emit('close')">×</div>
+          <div class="modal__dialog-close" v-if="iconClose" @click="$emit('close')">×</div>
           <div class="modal__dialog-content">
-            <h3 class="modal__dialog-title" v-if="title">{{ title }}</h3>
+            <h3 class="modal__dialog-title" v-once v-if="title">{{ title }}</h3>
             <slot></slot>
           </div>
         </div>
@@ -22,10 +22,18 @@ export default {
     title: {
       type: String
     },
-    modalOpen: {
+    open: {
       type: Boolean,
       default: false,
       required: true
+    },
+    iconClose: {
+      type: Boolean,
+      default: true
+    },
+    zIndex: {
+      type: Number,
+      default: 200
     }
   },
   setup (_, context) {
@@ -59,7 +67,6 @@ $radius: 10px;
   justify-content: center;
   align-items: stretch;
   transition: $timing cubic-bezier(.25, .8, .25, 1);
-  z-index: 201;
   outline: none;
 
   &__overlay {

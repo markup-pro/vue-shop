@@ -6,7 +6,7 @@ export function useCategoryCreateForm (context) {
   const store = useStore()
   const { handleSubmit, isSubmitting } = useForm()
 
-  const { value: title, errorMessage: titleError, handleBlur: titleBlur } = useField(
+  const { value: title, errorMessage: titleError } = useField(
     'title',
     yup
       .string()
@@ -14,7 +14,7 @@ export function useCategoryCreateForm (context) {
       .required('Пожалуйста введите название категории')
   )
 
-  const { value: type, errorMessage: typeError, handleBlur: typeBlur } = useField(
+  const { value: type, errorMessage: typeError } = useField(
     'type',
     yup
       .string()
@@ -34,9 +34,7 @@ export function useCategoryCreateForm (context) {
     title,
     type,
     titleError,
-    titleBlur,
     typeError,
-    typeBlur,
     onSubmit,
     isSubmitting
   }

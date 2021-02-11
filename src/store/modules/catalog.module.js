@@ -60,6 +60,7 @@ export default {
   },
   getters: {
     products: (state) => (filter) => {
+      console.log(filter)
       let { products } = state
 
       if (filter.category) {

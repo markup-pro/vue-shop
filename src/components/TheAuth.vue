@@ -1,16 +1,18 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <div :class="['form-control', { invalid: eError }]">
-      <label for="email">Email</label>
-      <input type="email" id="email" v-model="email" @blur="eBlur">
-      <small v-if="eError">{{ eError }}</small>
-    </div>
+    <app-input
+      label="Email"
+      id="email"
+      v-model="email"
+      type="email"
+      :error="eError"></app-input>
 
-    <div :class="['form-control', { invalid: pError }]">
-      <label for="password">Пароль</label>
-      <input type="password" id="password" v-model="password" @blur="pBlur">
-      <small v-if="pError">{{ pError }}</small>
-    </div>
+    <app-input
+      label="Пароль"
+      id="password"
+      v-model="password"
+      type="password"
+      :error="pError"></app-input>
 
     <button class="btn primary" type="submit" :disabled="isSubmitting || isTooManyAttempts">Войти</button>
     <div class="text-danger" v-if="isTooManyAttempts">
@@ -24,6 +26,7 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { error } from '@/utils/error'
 import { useLoginForm } from '@/use/login-form'
+import AppInput from '@/components/ui/AppInput'
 
 export default {
   setup () {
@@ -37,6 +40,7 @@ export default {
       })
     }
     return { ...useLoginForm() }
-  }
+  },
+  components: { AppInput }
 }
 </script>

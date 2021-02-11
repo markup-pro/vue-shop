@@ -1,4 +1,5 @@
 import axios from '@/axios/base'
+import { findIdx } from '@/utils/findIdx'
 
 export default {
   namespaced: true,
@@ -14,6 +15,10 @@ export default {
     },
     updateProducts (state, requests) {
       state.products.push(requests)
+    },
+    removeProduct (state, requests) {
+      const idx = findIdx(state.products, 'id', requests.id)
+      state.products.splice(idx, 1)
     },
     setCategories (state, requests) {
       state.categories = requests
@@ -40,6 +45,20 @@ export default {
         const { data } = await axios.post('products', payload)
 
         commit('updateProducts', data)
+      } catch (e) {
+        dispatch('setMessage', {
+          value: e.message,
+          type: 'danger'
+        }, { root: true })
+        throw new Error()
+      }
+    },
+    async productRemove ({ commit, dispatch }, id) {
+      console.log(id)
+      try {
+        const { data } = await axios.delete(`products/${id}`)
+
+        commit('removeProduct', { id })
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,

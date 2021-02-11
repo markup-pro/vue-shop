@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { currency } from '@/utils/currency'
 import CatalogFilter from '@/components/catalog/CatalogFilter'
 import CatalogProduct from '@/components/catalog/CatalogProduct'
@@ -25,7 +25,6 @@ import CatalogProduct from '@/components/catalog/CatalogProduct'
 export default {
   setup () {
     const store = useStore()
-    const router = useRouter()
     const route = useRoute()
     const filter = ref({ search: '', category: '' })
     const products = computed(() => store.getters['catalog/products'](filter.value))
@@ -36,20 +35,6 @@ export default {
       await store.dispatch('catalog/products')
       await store.dispatch('catalog/categories')
     })
-
-    watch(
-      () => filter.value,
-      (value) => {
-        const query = {}
-        Object.keys(value).forEach((k) => {
-          if (value[k]) {
-            query[k] = value[k]
-          }
-        })
-        router.replace({ query })
-      },
-      { deep: true }
-    )
 
     return {
       filter,

@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/cart',
     name: 'Cart',
-    component: () => import('../views/Cart.vue'),
+    component: () => import(/* webpackChunkName: 'cart' */ '../views/Cart.vue'),
     meta: {
       layout: 'main',
       auth: false
@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/product/:id',
     name: 'Product',
-    component: () => import('../views/Product.vue'),
+    component: () => import(/* webpackChunkName: 'product' */ '../views/Product.vue'),
     meta: {
       layout: 'main',
       auth: false
@@ -34,28 +34,28 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     redirect: '/admin/products',
-    component: () => import('../views/Admin.vue'),
+    component: () => import(/* webpackChunkName: 'admin' */'../views/admin/Admin.vue'),
+    meta: {
+      layout: 'admin',
+      auth: true
+    },
     children: [
       {
         path: 'products',
         name: 'Products',
-        component: () => import('../views/AdminProducts.vue')
+        component: () => import(/* webpackChunkName: 'admin-products' */'../views/admin/Products.vue')
       },
       {
         path: 'categories',
         name: 'Categories',
-        component: () => import('../views/AdminCategories.vue')
+        component: () => import(/* webpackChunkName: 'admin-categories' */'../views/admin/Categories.vue')
       }
-    ],
-    meta: {
-      layout: 'admin',
-      auth: true
-    }
+    ]
   },
   {
     path: '/:notFound(.*)',
     name: 'NotFound',
-    component: () => import('../views/NotFound.vue'),
+    component: () => import(/* webpackChunkName: 'not-found' */ '../views/NotFound.vue'),
     meta: {
       layout: 'error',
       auth: false

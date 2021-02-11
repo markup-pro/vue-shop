@@ -22,7 +22,7 @@
 
   <teleport to="body">
     <app-modal
-      :modal-open="isShowAuth"
+      :open="modalAuth"
       @close="showAuth(false)"
       title="Войти в систему">
       <the-auth></the-auth>
@@ -40,7 +40,7 @@ export default {
   setup () {
     const store = useStore()
 
-    const isShowAuth = computed(() => store.getters['auth/isShowAuth'])
+    const modalAuth = computed(() => store.getters['auth/isShowAuth'])
     const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
     const cartCount = computed(() => store.getters['cart/productCountAllInCart'])
 
@@ -50,7 +50,7 @@ export default {
 
     return {
       isAuthenticated,
-      isShowAuth,
+      modalAuth,
       cartCount,
       showAuth
     }

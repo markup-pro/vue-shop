@@ -1,13 +1,15 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export function useLoginForm () {
   const store = useStore()
+  const router = useRouter()
   const { handleSubmit, isSubmitting, submitCount } = useForm()
 
-  const { value: email, errorMessage: eError, handleBlur: eBlur } = useField(
+  const { value: email, errorMessage: eError } = useField(
     'email',
     yup
       .string()
@@ -18,7 +20,7 @@ export function useLoginForm () {
 
   const MIN_LENGTH = 6
 
-  const { value: password, errorMessage: pError, handleBlur: pBlur } = useField(
+  const { value: password, errorMessage: pError } = useField(
     'password',
     yup
       .string()
@@ -41,6 +43,7 @@ export function useLoginForm () {
     try {
       await store.dispatch('auth/login', values)
       store.commit('auth/showAuth', false)
+      await router.push('/admin')
     } catch (e) {
     }
   })
@@ -50,8 +53,6 @@ export function useLoginForm () {
     password,
     eError,
     pError,
-    eBlur,
-    pBlur,
     onSubmit,
     isSubmitting,
     isTooManyAttempts

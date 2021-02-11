@@ -28,42 +28,58 @@
 </template>
 
 <script>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   emits: ['update:modelValue'],
   props: {
     modelValue: {
-      type: Object,
-      required: true
+      type: Object
     },
     categories: {
       type: Array,
       required: true
     }
   },
-  setup (props, context) {
+  setup ({ modelValue }, context) {
+    const router = useRouter()
     const typeCategory = ref('')
-    const filter = computed(() => props.modelValue)
+    const search = ref(modelValue.search)
+    const category = ref(modelValue.category)
 
     function changeSearch (event) {
-      filter.value.search = event.target.value
+      search.value = event.target.value
     }
 
     function clearSearch () {
-      filter.value.search = ''
+      search.value = ''
     }
 
     function choiceCategory (type) {
-      filter.value.category = type || ''
+      category.value = type
     }
 
-    watch(filter, (value) => {
-      context.emit('update:modelValue', value)
+    watch([search, category], ([sv, cv]) => {
+      const query = {}
+
+      if (sv) {
+        query.search = sv
+      }
+      if (cv) {
+        query.category = cv
+      }
+
+      router.replace({ query })
+      context.emit('update:modelValue', {
+        search: sv,
+        category: cv
+      })
     })
 
     return {
-      filter,
+      search,
+      category,
       typeCategory,
       changeSearch,
       clearSearch,

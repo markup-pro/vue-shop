@@ -1,7 +1,7 @@
 <template>
   <app-page title="Категории">
     <template v-slot:header>
-      <button class="btn" @click.prevent="isShowCreateCategory = true">Добавить</button>
+      <button class="btn" @click.prevent="modalCreateCategory = true">Добавить</button>
     </template>
     <table class="table">
       <thead>
@@ -24,10 +24,10 @@
 
   <teleport to="body">
     <app-modal
-      :modal-open="isShowCreateCategory"
-      @close="isShowCreateCategory = false"
+      :open="modalCreateCategory"
+      @close="modalCreateCategory = false"
       title="Создать категорию">
-      <admin-category-add @close-modal="isShowCreateCategory = false"></admin-category-add>
+      <admin-form-category @close-modal="modalCreateCategory = false"></admin-form-category>
     </app-modal>
   </teleport>
 </template>
@@ -36,13 +36,13 @@
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import AppPage from '@/components/ui/AppPage'
-import AdminCategoryAdd from '@/components/admin/AdminCategoryAdd'
+import AdminFormCategory from '@/components/admin/AdminFormCategory'
 import AppModal from '@/components/ui/AppModal'
 
 export default {
   setup () {
     const store = useStore()
-    const isShowCreateCategory = ref(false)
+    const modalCreateCategory = ref(false)
 
     const categories = computed(() => store.getters['admin/categories'])
 
@@ -54,9 +54,9 @@ export default {
 
     return {
       categories,
-      isShowCreateCategory
+      modalCreateCategory
     }
   },
-  components: { AppPage, AdminCategoryAdd, AppModal }
+  components: { AppPage, AdminFormCategory, AppModal }
 }
 </script>

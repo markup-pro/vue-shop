@@ -2,11 +2,11 @@ import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { useStore } from 'vuex'
 
-export function useProductCreateForm (context) {
+export function useProductCreateForm (context, product) {
   const store = useStore()
   const { handleSubmit, isSubmitting } = useForm()
 
-  const { value: title, errorMessage: titleError, handleBlur: titleBlur } = useField(
+  const { value: title, errorMessage: titleError } = useField(
     'title',
     yup
       .string()
@@ -14,7 +14,7 @@ export function useProductCreateForm (context) {
       .required('Пожалуйста введите название продукта')
   )
 
-  const { value: desc, errorMessage: descError, handleBlur: descBlur } = useField(
+  const { value: desc, errorMessage: descError } = useField(
     'desc',
     yup
       .string()
@@ -22,7 +22,7 @@ export function useProductCreateForm (context) {
       .required('Пожалуйста введите описания продукта')
   )
 
-  const { value: img, errorMessage: imgError, handleBlur: imgBlur } = useField(
+  const { value: img, errorMessage: imgError } = useField(
     'img',
     yup
       .string()
@@ -30,7 +30,7 @@ export function useProductCreateForm (context) {
       .required('Пожалуйста добавьте изображение для продукта')
   )
 
-  const { value: count, errorMessage: countError, handleBlur: countBlur } = useField(
+  const { value: count, errorMessage: countError } = useField(
     'count',
     yup
       .number()
@@ -38,7 +38,7 @@ export function useProductCreateForm (context) {
       .required('Пожалуйста введите доступное количество продукта')
   )
 
-  const { value: price, errorMessage: priceError, handleBlur: priceBlur } = useField(
+  const { value: price, errorMessage: priceError } = useField(
     'price',
     yup
       .number()
@@ -46,7 +46,7 @@ export function useProductCreateForm (context) {
       .required('Пожалуйста введите цену продукта')
   )
 
-  const { value: category, errorMessage: categoryError, handleBlur: categoryBlur } = useField(
+  const { value: category, errorMessage: categoryError } = useField(
     'category',
     yup
       .string()
@@ -62,6 +62,13 @@ export function useProductCreateForm (context) {
     }
   })
 
+  title.value = product.title
+  desc.value = product.desc
+  img.value = product.img
+  count.value = product.count
+  price.value = product.price
+  category.value = product.category
+
   return {
     title,
     desc,
@@ -70,17 +77,11 @@ export function useProductCreateForm (context) {
     price,
     category,
     titleError,
-    titleBlur,
     descError,
-    descBlur,
     imgError,
-    imgBlur,
     countError,
-    countBlur,
     priceError,
-    priceBlur,
     categoryError,
-    categoryBlur,
     onSubmit,
     isSubmitting
   }
