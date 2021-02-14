@@ -1,12 +1,15 @@
 import axios from '@/axios/base'
-import { findIdx } from '@/utils/findIdx'
-import { isEmptyObj } from '@/utils/isEmptyObj'
+import store from '@/store'
+import router from '@/router'
+import { findIdx } from '@/utils/find-idx'
+import { isEmptyObj } from '@/utils/is-empty-obj'
+const CART_MODEL_KEY = 'cart-model'
 
 export default {
   namespaced: true,
   state () {
     return {
-      cartModel: {},
+      cartModel: JSON.parse(localStorage.getItem(CART_MODEL_KEY)) ?? {},
       products: []
     }
   },
@@ -24,23 +27,49 @@ export default {
       } else {
         state.cartModel[requests.id] = requests.count
       }
+      localStorage.setItem(CART_MODEL_KEY, JSON.stringify(state.cartModel))
+    },
+    clearCart (state) {
+      state.cartModel = {}
+      state.products = []
+      localStorage.removeItem(CART_MODEL_KEY)
     }
   },
   actions: {
-    async products ({ commit, state, dispatch }) {
-      const filter = Object.keys(state.cartModel).map((el) => `id=${el}`).join('&')
-      try {
-        const { data } = await axios.get(`products?${filter || 'id='}`)
-        commit('setProducts', data)
-      } catch (e) {
-        dispatch('setMessage', {
-          value: e.message,
-          type: 'danger'
-        }, { root: true })
+    async products ({ commit, state }) {
+      const idArr = Object.keys(state.cartModel)
+      if (!isEmptyObj(state.cartModel)) {
+        const products = await Promise.all(idArr.map(async (id) => {
+          const { data } = await axios.get(`products/${id}.json`)
+          return { id, ...data }
+        }))
+        commit('setProducts', products)
       }
     },
     async removeProduct ({ commit }, payload) {
-      commit('removeProduct', payload)
+      await commit('removeProduct', payload)
+    },
+    async updateCountProducts ({ state }) {
+      state.products.forEach(el => {
+        const newCount = el.count - state.cartModel[el.id]
+        axios.put(`products/${el.id}/count/.json?auth=${store.getters['auth/token']}`, newCount)
+      })
+    },
+    async order ({ commit, state, dispatch }) {
+      const user = store.getters['auth/user']
+      const orderProducts = state.products.map(el => {
+        return {
+          ...el,
+          count: state.cartModel[el.id]
+        }
+      })
+      dispatch('updateCountProducts', orderProducts)
+      await axios.post(`orders/${user.id}.json?auth=${store.getters['auth/token']}`, {
+        date: Date.now(),
+        list: orderProducts
+      })
+      commit('clearCart')
+      router.push('/order')
     }
   },
   getters: {
@@ -51,7 +80,7 @@ export default {
       let count = 0
 
       if (!isEmptyObj(state.cartModel)) {
-        if (typeof state.cartModel[id] !== 'undefined') {
+        if (state.cartModel[id]) {
           count = state.cartModel[id]
         }
       }

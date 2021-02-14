@@ -1,5 +1,7 @@
 import axios from '@/axios/base'
-import { findIdx } from '@/utils/findIdx'
+import store from '@/store'
+import { findIdx } from '@/utils/find-idx'
+import { transformDataFb } from '@/utils/transform-data-fb'
 
 export default {
   namespaced: true,
@@ -30,9 +32,8 @@ export default {
   actions: {
     async products ({ commit, dispatch }) {
       try {
-        const { data } = await axios.get('products')
-
-        commit('setProducts', data)
+        const { data } = await axios.get('products.json')
+        commit('setProducts', transformDataFb(data))
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -42,9 +43,11 @@ export default {
     },
     async productCreate ({ commit, dispatch }, payload) {
       try {
-        const { data } = await axios.post('products', payload)
-
-        commit('updateProducts', data)
+        const { data } = await axios.post(`products.json?auth=${store.getters['auth/token']}`, payload)
+        commit('updateProducts', {
+          id: data.name,
+          ...payload
+        })
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -54,10 +57,8 @@ export default {
       }
     },
     async productRemove ({ commit, dispatch }, id) {
-      console.log(id)
       try {
-        const { data } = await axios.delete(`products/${id}`)
-
+        await axios.delete(`products/${id}.json?auth=${store.getters['auth/token']}`)
         commit('removeProduct', { id })
       } catch (e) {
         dispatch('setMessage', {
@@ -69,9 +70,8 @@ export default {
     },
     async categories ({ commit, dispatch }) {
       try {
-        const { data } = await axios.get('categories')
-
-        commit('setCategories', data)
+        const { data } = await axios.get('categories.json')
+        commit('setCategories', transformDataFb(data))
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -81,9 +81,11 @@ export default {
     },
     async categoryCreate ({ commit, dispatch }, payload) {
       try {
-        const { data } = await axios.post('categories', payload)
-
-        commit('updateCategories', data)
+        const { data } = await axios.post(`categories.json?auth=${store.getters['auth/token']}`, payload)
+        commit('updateCategories', {
+          id: data.name,
+          ...payload
+        })
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,

@@ -1,12 +1,10 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-export function useLoginForm () {
+export function useAuthForm (state) {
   const store = useStore()
-  const router = useRouter()
   const { handleSubmit, isSubmitting, submitCount } = useForm()
 
   const { value: email, errorMessage: eError } = useField(
@@ -41,9 +39,12 @@ export function useLoginForm () {
 
   const onSubmit = handleSubmit(async values => {
     try {
-      await store.dispatch('auth/login', values)
+      if (state === 'login') {
+        await store.dispatch('auth/login', values)
+      } else {
+        await store.dispatch('auth/register', values)
+      }
       store.commit('auth/showAuth', false)
-      await router.push('/admin')
     } catch (e) {
     }
   })

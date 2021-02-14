@@ -5,8 +5,9 @@
       <cart-table :products="products"></cart-table>
       <hr>
       <p class="text-right"><strong>Всего: {{ currency(totalPrice) }}</strong></p>
-      <p class="text-right">
-        <button class="btn">Оплатить</button>
+      <p v-if="!isAuthenticated">Для оформления заказа вам нужно <a href="" @click.prevent="showAuth">авторизоваться</a></p>
+      <p v-else  class="text-right">
+        <button class="btn" @click.prevent="order">Оплатить</button>
       </p>
     </div>
   </app-page>
@@ -25,6 +26,7 @@ export default {
 
     const products = computed(() => store.getters['cart/products'])
     const totalPrice = computed(() => store.getters['cart/totalPrice'])
+    const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
 
     onMounted(async () => {
       // loading.value = true
@@ -32,10 +34,21 @@ export default {
       // loading.value = false
     })
 
+    const showAuth = () => {
+      store.commit('auth/showAuth', true)
+    }
+
+    const order = () => {
+      store.dispatch('cart/order')
+    }
+
     return {
       products,
       totalPrice,
-      currency
+      currency,
+      isAuthenticated,
+      showAuth,
+      order
     }
   },
   components: { CartTable, AppPage }

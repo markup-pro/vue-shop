@@ -4,7 +4,8 @@
     <textarea
       :id="id"
       :placeholder="placeholder"
-      @input="change">{{ modelValue }}</textarea>
+      :value="modelValue"
+      @input="change"></textarea>
     <small v-if="error">{{ error }}</small>
   </div>
 </template>

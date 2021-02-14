@@ -7,6 +7,7 @@
       @click.prevent="page -= 1">&#5176;</button>
     <div :class="['pagination__item', {'pagination__item_active' : page === item}]"
          v-for="item in chunkData.length"
+         :key="item"
          @click="page = item">{{ item }}</div>
     <button
       :disabled="page === chunkData.length"
@@ -18,7 +19,7 @@
 <script>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { chunkArray } from '@/utils/chunkArray'
+import { chunkArray } from '@/utils/chunk-array'
 
 export default {
   props: {

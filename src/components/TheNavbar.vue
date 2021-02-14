@@ -11,11 +11,11 @@
           Корзина <span v-if="cartCount" class="badge primary">{{ cartCount }}</span>
         </router-link>
       </li>
-      <li v-if="!isAuthenticated">
+      <li v-if="!isAuthenticated && !user">
         <a href="#" @click.prevent="showAuth(true)">Вход</a>
       </li>
       <li v-else>
-        <router-link to="/admin">Админка</router-link>
+        <router-link to="/personal">{{ user?.name }}</router-link>
       </li>
     </ul>
   </nav>
@@ -23,8 +23,7 @@
   <teleport to="body">
     <app-modal
       :open="modalAuth"
-      @close="showAuth(false)"
-      title="Войти в систему">
+      @close="showAuth(false)">
       <the-auth></the-auth>
     </app-modal>
   </teleport>
@@ -42,6 +41,7 @@ export default {
 
     const modalAuth = computed(() => store.getters['auth/isShowAuth'])
     const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
+    const user = computed(() => store.getters['auth/user'])
     const cartCount = computed(() => store.getters['cart/productCountAllInCart'])
 
     const showAuth = (status) => {
@@ -50,6 +50,7 @@ export default {
 
     return {
       isAuthenticated,
+      user,
       modalAuth,
       cartCount,
       showAuth

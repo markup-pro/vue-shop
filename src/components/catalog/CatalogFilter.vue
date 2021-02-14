@@ -42,11 +42,11 @@ export default {
       required: true
     }
   },
-  setup ({ modelValue }, context) {
+  setup (props, context) {
     const router = useRouter()
     const typeCategory = ref('')
-    const search = ref(modelValue.search)
-    const category = ref(modelValue.category)
+    const search = ref(props.modelValue.search)
+    const category = ref(props.modelValue.category)
 
     function changeSearch (event) {
       search.value = event.target.value

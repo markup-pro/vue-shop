@@ -1,46 +1,49 @@
 <template>
-  <form @submit.prevent="onSubmit">
-    <app-input
-      label="Email"
-      id="email"
-      v-model="email"
-      type="email"
-      :error="eError"></app-input>
-
-    <app-input
-      label="Пароль"
-      id="password"
-      v-model="password"
-      type="password"
-      :error="pError"></app-input>
-
-    <button class="btn primary" type="submit" :disabled="isSubmitting || isTooManyAttempts">Войти</button>
-    <div class="text-danger" v-if="isTooManyAttempts">
-      Вы слишком часто пытаетесь войти в систему. Попробуйте позже
+  <div class="auth">
+    <component :is="'the-' + type"/>
+    <div class="auth__nav">
+      <a href="#"
+         :class="['auth__nav-link', { 'active': type === 'login'}]"
+         @click.prevent="type = 'login'">Авторизация</a>
+      <a href="#"
+         :class="['auth__nav-link', { 'active': type === 'register'}]"
+         @click.prevent="type = 'register'">Регистрация</a>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
-import { error } from '@/utils/error'
-import { useLoginForm } from '@/use/login-form'
-import AppInput from '@/components/ui/AppInput'
+import { ref } from 'vue'
+import TheLogin from '@/components/TheLogin'
+import TheRegister from '@/components/TheRegister'
 
 export default {
   setup () {
-    const route = useRoute()
-    const store = useStore()
+    const type = ref('login')
 
-    if (route.query.message) {
-      store.dispatch('setMessage', {
-        value: error(route.query.message),
-        type: 'warning'
-      })
+    return {
+      type
     }
-    return { ...useLoginForm() }
   },
-  components: { AppInput }
+  components: { TheLogin, TheRegister }
 }
 </script>
+
+<style lang="scss">
+.auth {
+  &__nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+
+    &-link {
+      margin: 0 15px;
+
+      &.active {
+        font-weight: 700;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+</style>

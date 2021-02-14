@@ -1,4 +1,5 @@
 import axios from '@/axios/base'
+import { transformDataFb } from '@/utils/transform-data-fb'
 
 export default {
   namespaced: true,
@@ -14,7 +15,7 @@ export default {
       state.products = requests
     },
     setProduct (state, requests) {
-      state.product = requests[0]
+      state.product = requests
     },
     setCategories (state, requests) {
       state.categories = requests
@@ -23,9 +24,8 @@ export default {
   actions: {
     async products ({ commit, dispatch }) {
       try {
-        const { data } = await axios.get('products')
-
-        commit('setProducts', data)
+        const { data } = await axios.get('products.json')
+        commit('setProducts', transformDataFb(data))
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -33,11 +33,10 @@ export default {
         }, { root: true })
       }
     },
-    async product ({ commit, dispatch }, payload) {
+    async product ({ commit, dispatch }, id) {
       try {
-        const { data } = await axios.get(`products/?id=${payload}`)
-
-        commit('setProduct', data)
+        const { data } = await axios.get(`products/${id}.json`)
+        commit('setProduct', { ...data, id: id })
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -47,9 +46,8 @@ export default {
     },
     async categories ({ commit, dispatch }) {
       try {
-        const { data } = await axios.get('categories')
-
-        commit('setCategories', data)
+        const { data } = await axios.get('categories.json')
+        commit('setCategories', transformDataFb(data))
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -60,7 +58,6 @@ export default {
   },
   getters: {
     products: (state) => (filter) => {
-      console.log(filter)
       let { products } = state
 
       if (filter.category) {
