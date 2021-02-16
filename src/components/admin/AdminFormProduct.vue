@@ -1,4 +1,5 @@
 <template>
+  {{product}}
   <form @submit.prevent="onSubmit">
     <app-input
       label="Название"
