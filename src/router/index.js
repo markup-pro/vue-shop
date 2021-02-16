@@ -41,7 +41,7 @@ const routes = [
   },
   {
     path: '/personal',
-    name: 'Product',
+    name: 'Personal',
     component: () => import(/* webpackChunkName: 'personal' */ '../views/Personal.vue'),
     meta: {
       layout: 'main',
