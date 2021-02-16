@@ -2,7 +2,12 @@
 
 ## Auth
 ```
-login: test@test.com
+admin
+login: admin@admin.com
+password: 123456
+
+user
+login: user@user.com
 password: 123456
 ```
 
