@@ -79,6 +79,12 @@ export default {
       await store.dispatch('admin/categories')
     })
 
+    // const hasChanges = computed(() => {
+    //   return Object.keys((initial).reduce((acc, key) => {
+    //     return product.value[key] !== initial.key && acc
+    //   }), false)
+    // })
+
     return {
       save,
       product,

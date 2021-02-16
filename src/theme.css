@@ -545,11 +545,10 @@ h3 {
 }
 
 .product-card {
-    width: 220px;
+    width: calc(33.333% - 15px);
+    margin: 0 0 1rem 15px;
     height: 200px;
     border: 1px solid #ccc;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
     transition: .22s box-shadow;
     cursor: pointer;
 }
@@ -608,6 +607,7 @@ h3 {
 .products-table {
     display: flex;
     flex-wrap: wrap;
-    width: 750px;
+    flex: 1;
     padding: 1rem;
+    margin-left: -15px;
 }

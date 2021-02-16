@@ -1,17 +1,19 @@
 <template>
-  <div class="card">
-    <catalog-filter
-      :categories="categories"
-      v-model="filter"
-    ></catalog-filter>
-    <div class="products-table" v-if="products.length > 0">
-      <catalog-product
-        v-for="product in products"
-        :product="product"
-        :key="product.id"></catalog-product>
+  <app-page title="Каталог">
+    <div class="products-catalog">
+      <catalog-filter
+        :categories="categories"
+        v-model="filter"
+      ></catalog-filter>
+      <div class="products-table" v-if="products.length > 0">
+        <catalog-product
+          v-for="product in products"
+          :product="product"
+          :key="product.id"></catalog-product>
+      </div>
+      <div class="products-table" v-else>Товарой не найдено</div>
     </div>
-    <div class="products-table" v-else>Товарой не найдено</div>
-  </div>
+  </app-page>
 </template>
 
 <script>
@@ -19,6 +21,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { currency } from '@/utils/currency'
+import AppPage from '@/components/ui/AppPage'
 import CatalogFilter from '@/components/catalog/CatalogFilter'
 import CatalogProduct from '@/components/catalog/CatalogProduct'
 
@@ -43,14 +46,12 @@ export default {
       currency
     }
   },
-  components: { CatalogProduct, CatalogFilter }
+  components: { AppPage, CatalogProduct, CatalogFilter }
 }
 </script>
 
 <style scoped>
-  .card {
-    border-radius: 4px;
-    padding: 0;
+  .products-catalog {
     display: flex;
   }
 </style>

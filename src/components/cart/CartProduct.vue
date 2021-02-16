@@ -21,9 +21,9 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { currency } from '@/utils/currency'
-import { computed } from 'vue'
 import AppAmount from '@/components/ui/AppAmount'
 
 export default {
