@@ -19,7 +19,7 @@ export default {
       try {
         const id = store.getters['auth/user'].id
         const { data } = await axios.get(`orders/${id}.json`)
-        commit('setOrders', transformDataFb(data))
+        commit('setOrders', data ? transformDataFb(data) : [])
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,

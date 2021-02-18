@@ -30,23 +30,31 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 import AppModal from '@/components/ui/AppModal'
 import TheAuth from '@/components/TheAuth'
 
 export default {
   setup () {
     const store = useStore()
-
+    const router = useRouter()
+    const route = useRoute()
     const modalAuth = computed(() => store.getters['auth/isShowAuth'])
     const isAuthenticated = computed(() => store.getters['auth/isAuthenticated'])
     const user = computed(() => store.getters['auth/user'])
     const cartCount = computed(() => store.getters['cart/productCountAllInCart'])
-
     const showAuth = (status) => {
       store.commit('auth/showAuth', status)
     }
+
+    onMounted(() => {
+      if (route.query?.auth) {
+        showAuth(true)
+        router.replace({ query: null })
+      }
+    })
 
     return {
       isAuthenticated,

@@ -1,6 +1,5 @@
 <template>
-  <app-page>
-    <h2>Ваш заказ успешно оформлен!</h2>
+  <app-page title="Заказ успешно оформлен!">
     <p>Историю заказов можете посмотреть в <router-link to="/personal">личном кабинете</router-link></p>
   </app-page>
 </template>

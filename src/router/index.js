@@ -22,9 +22,9 @@ const routes = [
     }
   },
   {
-    path: '/order',
-    name: 'Order',
-    component: () => import(/* webpackChunkName: 'order' */ '../views/Order.vue'),
+    path: '/thanks',
+    name: 'Thanks',
+    component: () => import(/* webpackChunkName: 'thanks' */ '../views/Thanks.vue'),
     meta: {
       layout: 'main',
       auth: false
@@ -95,13 +95,12 @@ router.beforeEach((to, from, next) => {
   const admin = to.meta.admin
   const user = store.getters['auth/user']
 
-  if (requireAuth && admin && user.role === 'user' && isAuthenticated) {
+  if (requireAuth && admin && user?.role === 'user' && isAuthenticated) {
     next('/')
   } else if (requireAuth && isAuthenticated) {
     next()
   } else if (requireAuth && !isAuthenticated) {
-    next('/')
-    store.commit('auth/showAuth', true)
+    next('/?auth=true')
   } else {
     next()
   }

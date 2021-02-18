@@ -25,7 +25,7 @@ export default {
     async products ({ commit, dispatch }) {
       try {
         const { data } = await axios.get('products.json')
-        commit('setProducts', transformDataFb(data))
+        commit('setProducts', data ? transformDataFb(data) : [])
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -47,7 +47,7 @@ export default {
     async categories ({ commit, dispatch }) {
       try {
         const { data } = await axios.get('categories.json')
-        commit('setCategories', transformDataFb(data))
+        commit('setCategories', data ? transformDataFb(data) : [])
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
