@@ -17,8 +17,8 @@ export default {
     setProducts (state, requests) {
       state.products = requests
     },
-    removeProduct (state, requests) {
-      const idx = findIdx(state.products, 'id', requests.id)
+    removeProduct (state, id) {
+      const idx = findIdx(state.products, 'id', id)
       state.products.splice(idx, 1)
     },
     updateCartModel (state, requests) {
@@ -46,8 +46,15 @@ export default {
         commit('setProducts', products)
       }
     },
-    async removeProduct ({ commit }, payload) {
-      await commit('removeProduct', payload)
+    updateCartModel ({ commit, state }, payload) {
+      if (payload.count === 0 && state.products.length > 0) {
+        commit('removeProduct', payload.id)
+      }
+      commit('updateCartModel', payload)
+    },
+    removeProduct ({ commit }, id) {
+      commit('removeProduct', id)
+      commit('updateCartModel', { id, count: 0 })
     },
     async updateCountProducts ({ state }) {
       state.products.forEach(el => {
@@ -77,23 +84,15 @@ export default {
       return state.products
     },
     productCountInCart: (state) => (id) => {
-      let count = 0
-
-      if (!isEmptyObj(state.cartModel)) {
-        if (state.cartModel[id]) {
-          count = state.cartModel[id]
-        }
-      }
-
-      return count
+      return !isEmptyObj(state.cartModel) && state.cartModel[id] ? state.cartModel[id] : 0
     },
     productCountAllInCart (state) {
-      const obj = state.cartModel
+      const { cartModel } = state
       let count = 0
 
-      if (!isEmptyObj(state.cartModel)) {
-        for (const key in obj) {
-          count += obj[key]
+      if (!isEmptyObj(cartModel)) {
+        for (const key in cartModel) {
+          count += cartModel[key]
         }
       }
 

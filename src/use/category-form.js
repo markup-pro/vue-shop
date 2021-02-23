@@ -2,7 +2,7 @@ import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { useStore } from 'vuex'
 
-export function useCategoryCreateForm (context) {
+export function useCategoryForm (context) {
   const store = useStore()
   const { handleSubmit, isSubmitting } = useForm()
 

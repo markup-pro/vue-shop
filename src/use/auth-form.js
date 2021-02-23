@@ -42,7 +42,7 @@ export function useAuthForm (state) {
       if (state === 'login') {
         await store.dispatch('auth/login', values)
       } else {
-        await store.dispatch('auth/register', values)
+        await store.dispatch('auth/signUp', values)
       }
       store.commit('auth/showAuth', false)
     } catch (e) {

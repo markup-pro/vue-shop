@@ -19,14 +19,14 @@
 </template>
 
 <script>
-import { useCategoryCreateForm } from '@/use/category-create-form'
+import { useCategoryForm } from '@/use/category-form'
 import AppInput from '@/components/ui/AppInput'
 
 export default {
   emits: ['closeModal'],
   setup (_, context) {
     return {
-      ...useCategoryCreateForm(context)
+      ...useCategoryForm(context)
     }
   },
   components: { AppInput }

@@ -55,7 +55,7 @@
 <script>
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useProductCreateForm } from '@/use/product-create-form'
+import { useProductForm } from '@/use/product-form'
 import AppInput from '@/components/ui/AppInput'
 import AppTextarea from '@/components/ui/AppTextarea'
 import AppSelect from '@/components/ui/AppSelect'
@@ -90,7 +90,7 @@ export default {
       save,
       product,
       categories,
-      ...useProductCreateForm(context, product)
+      ...useProductForm(context, product)
     }
   },
   components: { AppInput, AppTextarea, AppSelect }

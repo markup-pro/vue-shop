@@ -1,41 +1,85 @@
-import axiosAuth from '@/axios/auth'
+import axios from 'axios'
 import axiosBase from '@/axios/base'
 import { error } from '@/utils/error'
 const TOKEN_KEY = 'jwt-token'
-const USER_KEY = 'user-role'
+const REFRESH_KEY = 'jwt-refresh-token'
+const EXPIRES_KEY = 'jwt-expires'
+const USER_KEY = 'shop-user'
+const AUTH_URL = process.env.VUE_APP_URL_AUTH
 
 export default {
   namespaced: true,
   state () {
     return {
       showAuth: false,
-      token: localStorage.getItem(TOKEN_KEY) ?? null,
-      user: JSON.parse(localStorage.getItem(USER_KEY)) ?? null
+      token: localStorage.getItem(TOKEN_KEY),
+      refreshToken: localStorage.getItem(REFRESH_KEY),
+      expiresDate: new Date(localStorage.getItem(EXPIRES_KEY)),
+      user: JSON.parse(localStorage.getItem(USER_KEY)) ?? {}
     }
   },
   mutations: {
-    setToken (state, token) {
-      state.token = token
-      localStorage.setItem(TOKEN_KEY, token)
-    },
     setUser (state, data) {
       state.user = data
       localStorage.setItem(USER_KEY, JSON.stringify(data))
     },
+    setToken (state, { refreshToken, idToken, expiresIn = '3600' }) {
+      const expiresDate = new Date(new Date().getTime() + Number(expiresIn) * 1000)
+      state.token = idToken
+      state.refreshToken = refreshToken
+      state.expiresDate = expiresDate
+      localStorage.setItem(TOKEN_KEY, idToken)
+      localStorage.setItem(REFRESH_KEY, refreshToken)
+      localStorage.setItem(EXPIRES_KEY, expiresDate.toString())
+    },
     logout (state) {
-      state.token = false
-      state.user = false
-      localStorage.removeItem(USER_KEY)
+      state.token = null
+      state.refreshToken = null
+      state.expiresDate = null
+      state.user = {}
       localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(REFRESH_KEY)
+      localStorage.removeItem(EXPIRES_KEY)
+      localStorage.removeItem(USER_KEY)
     },
     showAuth (state, payload) {
       state.showAuth = payload
     }
   },
   actions: {
-    async setRole ({ commit, dispatch }, payload) {
+    async login ({ commit, dispatch }, payload) {
       try {
-        const url = `users/${payload.localId}.json?auth=${payload.idToken}`
+        const url = `${AUTH_URL}accounts:signInWithPassword?key=${process.env.VUE_APP_FB_KEY}`
+        const { data } = await axios.post(url, { ...payload, returnSecureToken: true })
+        commit('setToken', data)
+        dispatch('getUser', data)
+        commit('clearMessage', null, { root: true })
+      } catch (e) {
+        dispatch('setMessage', {
+          value: error(e.response.data.error.message),
+          type: 'danger'
+        }, { root: true })
+        throw new Error()
+      }
+    },
+    async signUp ({ commit, dispatch }, payload) {
+      try {
+        const url = `${AUTH_URL}accounts:signUp?key=${process.env.VUE_APP_FB_KEY}`
+        const { data } = await axios.post(url, { ...payload })
+        commit('setToken', data)
+        dispatch('createUser', data)
+        commit('clearMessage', null, { root: true })
+      } catch (e) {
+        dispatch('setMessage', {
+          value: error(e.response.data.error.message),
+          type: 'danger'
+        }, { root: true })
+        throw new Error()
+      }
+    },
+    async createUser ({ commit, dispatch }, payload) {
+      try {
+        const url = `users/${payload.localId}.json`
         const { data } = await axiosBase.put(url, {
           name: payload.email,
           role: 'user'
@@ -49,42 +93,11 @@ export default {
         throw new Error()
       }
     },
-    async getRole ({ commit, dispatch }, payload) {
+    async getUser ({ commit, dispatch }, payload) {
       try {
-        const url = `users/${payload.localId}.json?auth=${payload.idToken}`
+        const url = `users/${payload.localId}.json`
         const { data } = await axiosBase.get(url)
         commit('setUser', { id: payload.localId, ...data })
-        commit('clearMessage', null, { root: true })
-      } catch (e) {
-        dispatch('setMessage', {
-          value: error(e.response.data.error.message),
-          type: 'danger'
-        }, { root: true })
-        throw new Error()
-      }
-    },
-    async login ({ commit, dispatch }, payload) {
-      try {
-        const url = `accounts:signInWithPassword?key=${process.env.VUE_APP_FB_KEY}`
-        const { data } = await axiosAuth.post(url, { ...payload, returnSecureToken: true })
-        commit('setToken', data.idToken)
-        dispatch('getRole', data)
-        commit('clearMessage', null, { root: true })
-      } catch (e) {
-        dispatch('setMessage', {
-          value: error(e.response.data.error.message),
-          type: 'danger'
-        }, { root: true })
-        throw new Error()
-      }
-    },
-    async register ({ commit, dispatch }, payload) {
-      try {
-        const url = `accounts:signUp?key=${process.env.VUE_APP_FB_KEY}`
-        const { data } = await axiosAuth.post(url, { ...payload })
-        commit('setToken', data.idToken)
-        dispatch('setRole', data)
-        commit('clearMessage', null, { root: true })
       } catch (e) {
         dispatch('setMessage', {
           value: error(e.response.data.error.message),
@@ -102,7 +115,16 @@ export default {
       return state.user
     },
     isAuthenticated (_, getters) {
-      return !!getters.token
+      return !!getters.token && !getters.isExpired
+    },
+    isAdmin (state) {
+      return state.user.role === 'admin'
+    },
+    isUser (_, getters) {
+      return !getters.isAdmin
+    },
+    isExpired (state) {
+      return new Date() >= state.expiresDate
     },
     isShowAuth (state) {
       return state.showAuth

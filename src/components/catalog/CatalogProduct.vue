@@ -7,11 +7,11 @@
     <div class="text-center" v-if="product.count !== 0">
       <button
         class="btn"
-        @click.prevent="changeAmount(1)"
+        @click.prevent="updateCartModel(1)"
         v-if="productCountInCart === 0">{{ currency(product.price) }}</button>
       <div class="product-amount" v-else>
         <app-amount
-          @change="changeAmount"
+          @change="updateCartModel"
           :value="productCountInCart"
           :max-value="product.count"
         ></app-amount>
@@ -25,6 +25,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { currency } from '@/utils/currency'
+import { useCartModel } from '@/use/cart-model'
 import AppAmount from '@/components/ui/AppAmount'
 
 export default {
@@ -36,17 +37,12 @@ export default {
   },
   setup (props) {
     const store = useStore()
-
     const productCountInCart = computed(() => store.getters['cart/productCountInCart'](props.product.id))
-
-    function changeAmount (count) {
-      store.commit('cart/updateCartModel', { id: props.product.id, count })
-    }
 
     return {
       currency,
       productCountInCart,
-      changeAmount
+      ...useCartModel(props.product.id)
     }
   },
   components: { AppAmount }

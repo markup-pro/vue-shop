@@ -7,7 +7,7 @@
     <td>
       <div class="cart-product__amount">
         <app-amount
-          @change="changeAmount"
+          @change="updateCartModel"
           :value="productCountInCart"
           :max-value="product.count"></app-amount>
       </div>
@@ -24,6 +24,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { currency } from '@/utils/currency'
+import { useCartModel } from '@/use/cart-model'
 import AppAmount from '@/components/ui/AppAmount'
 
 export default {
@@ -37,28 +38,15 @@ export default {
     const store = useStore()
     const productCountInCart = computed(() => store.getters['cart/productCountInCart'](props.product.id))
 
-    function updateCartModel (count) {
-      store.commit('cart/updateCartModel', { id: props.product.id, count })
-    }
-
-    const remove = async () => {
-      updateCartModel(0)
-      store.dispatch('cart/removeProduct', { id: props.product.id })
-    }
-
-    const changeAmount = (count) => {
-      updateCartModel(count)
-
-      if (count === 0) {
-        remove()
-      }
+    function remove () {
+      store.dispatch('cart/removeProduct', props.product.id)
     }
 
     return {
       productCountInCart,
       currency,
       remove,
-      changeAmount
+      ...useCartModel(props.product.id)
     }
   },
   components: { AppAmount }

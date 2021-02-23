@@ -1,16 +1,34 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
 
-const cartAxios = axios.create({
+const baseAxios = axios.create({
   baseURL: process.env.VUE_APP_URL_DB
 })
 
-cartAxios.interceptors.response.use(null, error => {
+baseAxios.defaults.params = {}
+
+baseAxios.interceptors.request.use(async config => {
+  if (!store.getters['auth/isAuthenticated']) {
+    return config
+  }
+
+  if (store.getters['auth/isExpired']) {
+    await store.dispatch('auth/refresh')
+  }
+
+  config.params.auth = store.getters['auth/token']
+
+  return config
+})
+
+baseAxios.interceptors.response.use(null, error => {
   if (error.response.status === 401) {
-    store.commit('auth/showAuth', true)
+    store.commit('auth/logout')
+    router.push('/?auth=true')
   }
 
   return Promise.reject(error)
 })
 
-export default cartAxios
+export default baseAxios
