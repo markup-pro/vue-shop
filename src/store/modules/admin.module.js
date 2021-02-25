@@ -1,5 +1,4 @@
 import axios from '@/axios/base'
-import store from '@/store'
 import { findIdx } from '@/utils/find-idx'
 import { transformDataFb } from '@/utils/transform-data-fb'
 
@@ -7,26 +6,23 @@ export default {
   namespaced: true,
   state () {
     return {
-      products: [],
-      categories: []
+      products: []
     }
   },
   mutations: {
     setProducts (state, requests) {
       state.products = requests
     },
-    updateProducts (state, requests) {
+    addProduct (state, requests) {
       state.products.push(requests)
+    },
+    updateProduct (state, requests) {
+      const idx = findIdx(state.products, 'id', requests.id)
+      state.products.splice(idx, 1, requests.values)
     },
     removeProduct (state, requests) {
       const idx = findIdx(state.products, 'id', requests.id)
       state.products.splice(idx, 1)
-    },
-    setCategories (state, requests) {
-      state.categories = requests
-    },
-    updateCategories (state, requests) {
-      state.categories.push(requests)
     }
   },
   actions: {
@@ -43,8 +39,24 @@ export default {
     },
     async productCreate ({ commit, dispatch }, payload) {
       try {
-        const { data } = await axios.post(`products.json?auth=${store.getters['auth/token']}`, payload)
-        commit('updateProducts', {
+        const { data } = await axios.post('products.json', payload)
+        commit('addProduct', {
+          id: data.name,
+          ...payload
+        })
+      } catch (e) {
+        dispatch('setMessage', {
+          value: e.message,
+          type: 'danger'
+        }, { root: true })
+        throw new Error()
+      }
+    },
+    async productUpdate ({ commit, dispatch }, payload) {
+      console.log(payload)
+      try {
+        const { data } = await axios.patch(`products/${payload.id}.json`, payload.values)
+        commit('updateProduct', {
           id: data.name,
           ...payload
         })
@@ -58,34 +70,8 @@ export default {
     },
     async productRemove ({ commit, dispatch }, id) {
       try {
-        await axios.delete(`products/${id}.json?auth=${store.getters['auth/token']}`)
+        await axios.delete(`products/${id}.json`)
         commit('removeProduct', { id })
-      } catch (e) {
-        dispatch('setMessage', {
-          value: e.message,
-          type: 'danger'
-        }, { root: true })
-        throw new Error()
-      }
-    },
-    async categories ({ commit, dispatch }) {
-      try {
-        const { data } = await axios.get('categories.json')
-        commit('setCategories', data ? transformDataFb(data) : [])
-      } catch (e) {
-        dispatch('setMessage', {
-          value: e.message,
-          type: 'danger'
-        }, { root: true })
-      }
-    },
-    async categoryCreate ({ commit, dispatch }, payload) {
-      try {
-        const { data } = await axios.post(`categories.json?auth=${store.getters['auth/token']}`, payload)
-        commit('updateCategories', {
-          id: data.name,
-          ...payload
-        })
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -98,9 +84,6 @@ export default {
   getters: {
     products (state) {
       return state.products.sort((a, b) => (a.count === 0) - (b.count === 0))
-    },
-    categories (state) {
-      return state.categories
     }
   }
 }

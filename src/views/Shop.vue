@@ -1,5 +1,5 @@
 <template>
-  <app-page title="Каталог">
+  <app-page title-head="Каталог">
     <app-loader v-if="loader"></app-loader>
     <div class="products-catalog" v-else>
       <catalog-filter
@@ -24,6 +24,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { currency } from '@/utils/currency'
+import { useCategories } from '@/use/categories'
 import AppPage from '@/components/ui/AppPage'
 import AppLoader from '@/components/ui/AppLoader'
 import CatalogFilter from '@/components/catalog/CatalogFilter'
@@ -36,13 +37,11 @@ export default {
     const loader = ref(false)
     const filter = ref({ search: '', category: '' })
     const products = computed(() => store.getters['catalog/products'](filter.value))
-    const categories = computed(() => store.getters['catalog/categories'])
 
     onMounted(async () => {
       filter.value = { ...filter.value, ...route.query }
       loader.value = true
       await store.dispatch('catalog/products')
-      await store.dispatch('catalog/categories')
       loader.value = false
     })
 
@@ -50,8 +49,8 @@ export default {
       loader,
       filter,
       products,
-      categories,
-      currency
+      currency,
+      ...useCategories()
     }
   },
   components: { AppPage, AppLoader, CatalogProduct, CatalogFilter }

@@ -1,5 +1,4 @@
 <template>
-  {{product}}
   <form @submit.prevent="onSubmit">
     <app-input
       label="Название"
@@ -44,18 +43,29 @@
       :error="categoryError"></app-select>
 
     <div class="btn-holder" v-if="state === 'create'">
-      <button class="btn primary" type="submit" :disabled="isSubmitting">Создать</button>
+      <button
+        class="btn primary"
+        type="submit"
+        :disabled="isSubmitting">Создать</button>
     </div>
     <div class="btn-holder" v-if="state === 'edit'">
-      <button class="btn primary" type="submit" :disabled="!save || isSubmitting">Сохранить</button>
+      <button
+        class="btn primary"
+        type="submit"
+        :disabled="isSubmitting">Сохранить</button>
+      <button
+        class="btn danger"
+        type="button"
+        :disabled="isSubmitting"
+        @click.prevent="cancel">Отменить</button>
     </div>
   </form>
 </template>
 
 <script>
-import { reactive, ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { reactive } from 'vue'
 import { useProductForm } from '@/use/product-form'
+import { useCategories } from '@/use/categories'
 import AppInput from '@/components/ui/AppInput'
 import AppTextarea from '@/components/ui/AppTextarea'
 import AppSelect from '@/components/ui/AppSelect'
@@ -71,26 +81,17 @@ export default {
     }
   },
   setup (props, context) {
-    const store = useStore()
-    const save = ref(false)
     const product = reactive({ ...props.data })
-    const categories = computed(() => store.getters['admin/categories'])
 
-    onMounted(async () => {
-      await store.dispatch('admin/categories')
-    })
-
-    // const hasChanges = computed(() => {
-    //   return Object.keys((initial).reduce((acc, key) => {
-    //     return product.value[key] !== initial.key && acc
-    //   }), false)
-    // })
+    const cancel = () => {
+      context.emit('closeModal')
+    }
 
     return {
-      save,
       product,
-      categories,
-      ...useProductForm(context, product)
+      cancel,
+      ...useCategories(),
+      ...useProductForm(context, product, props.state)
     }
   },
   components: { AppInput, AppTextarea, AppSelect }

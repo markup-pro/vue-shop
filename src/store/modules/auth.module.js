@@ -77,6 +77,22 @@ export default {
         throw new Error()
       }
     },
+    async refresh ({ state, commit }) {
+      try {
+        const url = `https://securetoken.googleapis.com/v1/token?key=${process.env.VUE_APP_FB_KEY}`
+        const { data } = await axios.post(url, {
+          grant_type: 'refresh_token',
+          refresh_token: state.refreshToken
+        })
+        commit('setToken', {
+          refreshToken: data.refresh_token,
+          idToken: data.id_token,
+          expiresIn: data.expires_in
+        })
+      } catch (e) {
+        console.log('Error:', e.message)
+      }
+    },
     async createUser ({ commit, dispatch }, payload) {
       try {
         const url = `users/${payload.localId}.json`

@@ -2,6 +2,7 @@ import { createStore, createLogger } from 'vuex'
 import auth from './modules/auth.module'
 import cart from './modules/cart.module'
 import catalog from './modules/catalog.module'
+import categories from './modules/categories.module'
 import admin from './modules/admin.module'
 import personal from './modules/personal.module'
 
@@ -39,6 +40,7 @@ export default createStore({
     auth,
     cart,
     catalog,
+    categories,
     admin,
     personal
   }

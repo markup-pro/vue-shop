@@ -1,26 +1,11 @@
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
-// import { useStore } from 'vuex'
+import { useStore } from 'vuex'
 import { isEmptyObj } from '@/utils/is-empty-obj'
 
-export function useProductForm (context, product) {
-  // const store = useStore()
+export function useProductForm (context, product, state) {
+  const store = useStore()
   const { handleSubmit, isSubmitting } = useForm()
-
-  if (!isEmptyObj(product)) {
-    const formValues = {
-      title: product.title,
-      desc: product.desc,
-      img: product.img,
-      count: product.count,
-      price: product.price,
-      category: product.category
-    }
-
-    useForm({
-      initialValues: formValues
-    })
-  }
 
   const { value: title, errorMessage: titleError } = useField(
     'title',
@@ -71,13 +56,25 @@ export function useProductForm (context, product) {
   )
 
   const onSubmit = handleSubmit(async values => {
-    console.log(isSubmitting.value)
-    // try {
-    //   await store.dispatch('admin/productCreate', values)
-    //   context.emit('closeModal')
-    // } catch (e) {
-    // }
+    try {
+      if (state === 'edit') {
+        await store.dispatch('admin/productUpdate', { id: product.id, values })
+      } else {
+        await store.dispatch('admin/productCreate', values)
+      }
+      context.emit('closeModal')
+    } catch (e) {
+    }
   })
+
+  if (!isEmptyObj(product)) {
+    title.value = product.title
+    desc.value = product.desc
+    img.value = product.img
+    count.value = product.count
+    price.value = product.price
+    category.value = product.category
+  }
 
   return {
     title,

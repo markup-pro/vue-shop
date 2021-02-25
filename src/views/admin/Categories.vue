@@ -1,5 +1,5 @@
 <template>
-  <app-page title="Категории">
+  <app-page title="Категории" title-head="Категории">
     <template v-slot:header>
       <button class="btn" @click.prevent="modalCreateCategory = true">Добавить</button>
     </template>
@@ -12,12 +12,12 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(category, idx) in categories"
-          :key="category.id">
-        <td>{{ idx + 1 }}</td>
-        <td>{{ category.title }}</td>
-        <td>{{ category.type }}</td>
-      </tr>
+        <tr v-for="(category, idx) in categories"
+            :key="category.id">
+          <td>{{ idx + 1 }}</td>
+          <td>{{ category.title }}</td>
+          <td>{{ category.type }}</td>
+        </tr>
       </tbody>
     </table>
   </app-page>
@@ -33,28 +33,19 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue'
+import { useCategories } from '@/use/categories'
 import AppPage from '@/components/ui/AppPage'
 import AdminFormCategory from '@/components/admin/AdminFormCategory'
 import AppModal from '@/components/ui/AppModal'
 
 export default {
   setup () {
-    const store = useStore()
     const modalCreateCategory = ref(false)
 
-    const categories = computed(() => store.getters['admin/categories'])
-
-    onMounted(async () => {
-      // loading.value = true
-      await store.dispatch('admin/categories')
-      // loading.value = false
-    })
-
     return {
-      categories,
-      modalCreateCategory
+      modalCreateCategory,
+      ...useCategories()
     }
   },
   components: { AppPage, AdminFormCategory, AppModal }

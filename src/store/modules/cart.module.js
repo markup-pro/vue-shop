@@ -59,7 +59,7 @@ export default {
     async updateCountProducts ({ state }) {
       state.products.forEach(el => {
         const newCount = el.count - state.cartModel[el.id]
-        axios.patch(`products/${el.id}/.json?auth=${store.getters['auth/token']}`, { count: newCount })
+        axios.patch(`products/${el.id}/.json}`, { count: newCount })
       })
     },
     async order ({ commit, state, dispatch }) {
@@ -70,7 +70,7 @@ export default {
           count: state.cartModel[el.id]
         }
       })
-      await axios.post(`orders/${user.id}.json?auth=${store.getters['auth/token']}`, {
+      await axios.post(`orders/${user.id}.json`, {
         date: Date.now(),
         list: orderProducts
       })

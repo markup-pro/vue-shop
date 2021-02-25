@@ -1,5 +1,5 @@
 <template>
-  <app-page title="Продукты">
+  <app-page title="Продукты" title-head="Продукты">
     <template v-slot:header>
       <button
         class="btn"

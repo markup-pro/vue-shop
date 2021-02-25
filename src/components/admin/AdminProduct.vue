@@ -18,16 +18,12 @@
     <app-modal
       :open="modalProduct"
       :title="product.title"
-      @close="closeModal">
+      @close="modalProduct = false">
       <admin-form-product
         :data="product"
-        state="edit"></admin-form-product>
+        state="edit"
+        @close-modal="modalProduct = false"></admin-form-product>
     </app-modal>
-
-    <app-confirm
-      :open="modalConfirmChanges"
-      title="Есть несохраненные изменения. Закрыть модальное окно?"
-      @reject="modalConfirmChanges = false"></app-confirm>
 
     <app-confirm
       :open="confirm"
@@ -59,7 +55,6 @@ export default {
   setup (props) {
     const store = useStore()
     const modalProduct = ref(false)
-    const modalConfirmChanges = ref(false)
     const confirm = ref(false)
 
     const removeProduct = async function () {
@@ -67,23 +62,11 @@ export default {
       confirm.value = false
     }
 
-    const closeModal = () => {
-      modalConfirmChanges.value = true
-    }
-
-    const confirmChangesReject = () => {
-      modalConfirmChanges.value = false
-      modalProduct.value = false
-    }
-
     return {
       modalProduct,
-      modalConfirmChanges,
       confirm,
       currency,
-      closeModal,
-      removeProduct,
-      confirmChangesReject
+      removeProduct
     }
   },
 

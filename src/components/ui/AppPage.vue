@@ -17,6 +17,9 @@ export default {
     title: {
       type: String
     },
+    titleHead: {
+      type: String
+    },
     back: {
       type: Boolean,
       default: false
@@ -31,7 +34,7 @@ export default {
     }
   },
   setup (props) {
-    document.title = `${props.title} | Shop Food`
+    document.title = props.titleHead ? `${props.titleHead} | Shop Food` : 'Shop Food'
   }
 }
 </script>

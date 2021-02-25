@@ -3,7 +3,8 @@
     back
     back-text="Вернуться в каталог"
     back-link="/"
-    title="Личный кабинет">
+    title="Личный кабинет"
+    title-head="Личный кабинет">
     <template v-slot:header>
       <button class="btn" @click.prevent="logout">Выйти</button>
     </template>

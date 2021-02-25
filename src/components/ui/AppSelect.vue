@@ -40,7 +40,6 @@ export default {
   },
   setup (_, context) {
     function change (event) {
-      console.log(event)
       context.emit('update:modelValue', event.target.value)
     }
 

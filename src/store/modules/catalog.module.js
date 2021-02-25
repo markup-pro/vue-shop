@@ -6,8 +6,7 @@ export default {
   state () {
     return {
       products: [],
-      product: null,
-      categories: []
+      product: null
     }
   },
   mutations: {
@@ -16,9 +15,6 @@ export default {
     },
     setProduct (state, requests) {
       state.product = requests
-    },
-    setCategories (state, requests) {
-      state.categories = requests
     }
   },
   actions: {
@@ -36,18 +32,9 @@ export default {
     async product ({ commit, dispatch }, id) {
       try {
         const { data } = await axios.get(`products/${id}.json`)
-        commit('setProduct', { ...data, id: id })
-      } catch (e) {
-        dispatch('setMessage', {
-          value: e.message,
-          type: 'danger'
-        }, { root: true })
-      }
-    },
-    async categories ({ commit, dispatch }) {
-      try {
-        const { data } = await axios.get('categories.json')
-        commit('setCategories', data ? transformDataFb(data) : [])
+        if (data) {
+          commit('setProduct', { ...data, id: id })
+        }
       } catch (e) {
         dispatch('setMessage', {
           value: e.message,
@@ -76,9 +63,6 @@ export default {
     },
     product (state) {
       return state.product
-    },
-    categories (state) {
-      return state.categories
     }
   }
 }
